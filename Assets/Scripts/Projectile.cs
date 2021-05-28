@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NoZ;
+using UnityEngine;
 
 namespace Rift
 {
@@ -7,10 +8,13 @@ namespace Rift
         [Header("General")]
         [SerializeField] private float _lifetime = 0;
         [SerializeField] private float _damage = 0;
+        [SerializeField] GameObject _impactFX = null;
 
         [Header("Physics")]
         [SerializeField] private LayerMask _collisionMask = 0;
         [SerializeField] private float _radius = 0.1f;
+
+        public Actor source { get; set; }
 
         private void FixedUpdate()
         {
@@ -32,11 +36,20 @@ namespace Rift
             var direction = delta.normalized;
             if (Physics.SphereCast(transform.position, _radius, direction, out var hit, distance, _collisionMask))
             {
-                var health = hit.collider.GetComponent<Health>();
-                if(health != null)
-                {
+                var health = hit.collider.GetComponentInParent<Health>();
+                if (health != null)
                     health.Adjust(-_damage);
-                }
+
+                var actor = hit.collider.GetComponentInParent<Actor>();
+                if (actor != null)
+                    actor.Send(new ImpactEvent(source, hit.point, hit.normal.ToXZ(), distance / Time.deltaTime));
+
+                if(_impactFX != null)
+                {
+                    var impactFX = Instantiate(_impactFX, null);
+                    impactFX.transform.position = hit.point;
+                    impactFX.transform.rotation = Quaternion.LookRotation(hit.normal.ToXZ(), Vector3.up);
+                }                
 
                 Destroy(gameObject);
                 return;

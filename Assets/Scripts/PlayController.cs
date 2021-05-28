@@ -1,17 +1,21 @@
+using NoZ;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Rift
 {
-    public class PlayController : MonoBehaviour
+    public class PlayController : ActorComponent
     {
         [SerializeField] private InputActionReference _moveAction = null;
         [SerializeField] private InputActionReference _lookAction = null;
         [SerializeField] private InputActionReference _mouseLookAction = null;
         [SerializeField] private InputActionReference _primaryAttackAction = null;
+        [SerializeField] private AudioSource _primaryAttackSound = null;
         [SerializeField] private float _speed = 10.0f;
 
         [SerializeField] private GameObject _primaryAttackProjectile = null;
+
+
 
         private void Awake()
         {
@@ -23,20 +27,32 @@ namespace Rift
             var projectile = Instantiate(_primaryAttackProjectile, null).GetComponent<Projectile>();
             projectile.transform.position = transform.position + transform.forward * 0.5f;
             projectile.transform.rotation = transform.rotation;
+            projectile.source = actor;
+
+            _primaryAttackSound.pitch = Random.Range(0.8f, 1.2f);
+            _primaryAttackSound.Play();
         }
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             _moveAction.action.Enable();
             _mouseLookAction.action.Enable();
             _primaryAttackAction.action.Enable();
+
+            GameManager.player = gameObject;
         }
 
-        private void OnDisable()
+        protected override void OnDisable()
         {
+            base.OnDisable();
+
             _moveAction.action.Disable();
             _mouseLookAction.action.Disable();
             _primaryAttackAction.action.Disable();
+
+            GameManager.player = null;
         }
 
         private void FixedUpdate()

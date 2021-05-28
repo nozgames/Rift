@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using NoZ;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,6 +7,8 @@ namespace Rift
 {
     class GameManager : MonoBehaviour
     {
+        [SerializeField] private Transform _cameraShake = null;
+
         private static GameManager _instance = null;
 
         private bool _gamepad = false;
@@ -14,6 +17,8 @@ namespace Rift
         /// True if there is an active gamepad
         /// </summary>
         public static bool isUsingGamepad => _instance._gamepad;
+
+        public static GameObject player { get; set; }
 
         private void Awake()
         {
@@ -35,6 +40,14 @@ namespace Rift
         private void OnDeviceChanged(InputDevice inputDevice, InputDeviceChange deviceChange)
         {
             _gamepad = InputSystem.devices.Where(d => d.enabled && d is Gamepad).Any();
+        }
+
+        public static void ShakeCamera (float intensity, float duration)
+        {
+            Tween.Shake(new Vector2(intensity, intensity), intensity)
+                .Duration(duration)
+                .Key("shake")
+                .Start(_instance._cameraShake.gameObject);
         }
     }
 

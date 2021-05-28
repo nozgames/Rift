@@ -1,9 +1,9 @@
-﻿using System;
+﻿using NoZ;
 using UnityEngine;
 
 namespace Rift
 {
-    class Health : MonoBehaviour
+    class Health : ActorComponent
     {
         [SerializeField] private float _max = 100.0f;
 
@@ -12,8 +12,6 @@ namespace Rift
         public float value => _value;
 
         public float ratio => _value / _max;
-
-        public event Action onValueChanged;
 
         private void Awake()
         {
@@ -27,9 +25,7 @@ namespace Rift
             _value = Mathf.Clamp(_value, 0.0f, _max);
 
             if(oldValue != _value)
-            {
-                onValueChanged?.Invoke();
-            }
+                Send(new HealthChangedEvent(this, oldValue - _value));
         }
     }
 }

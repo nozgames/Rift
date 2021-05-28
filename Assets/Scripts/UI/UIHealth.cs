@@ -1,31 +1,21 @@
-﻿using UnityEngine;
+﻿using NoZ;
+using UnityEngine;
 
 namespace Rift
 {
-    class UIHealth : MonoBehaviour
+    class UIHealth : ActorComponent
     {
-        private Health _health;
         private RectTransform _rectTransform;
 
         private void Awake()
         {
-            _health = GetComponentInParent<Health>();
             _rectTransform = GetComponent<RectTransform>();
         }
 
-        private void OnEnable()
+        [ActorEventHandler]
+        private void OnHealthChangedEvent(HealthChangedEvent evt)
         {
-            _health.onValueChanged += OnHealthValueChanged;
-        }
-
-        private void OnDisable()
-        {
-            _health.onValueChanged -= OnHealthValueChanged;
-        }
-
-        private void OnHealthValueChanged()
-        {
-            _rectTransform.anchorMax = new Vector2(_health.ratio, 1.0f);
+            _rectTransform.anchorMax = new Vector2(evt.health.ratio, 1.0f);
         }
     }
 }
