@@ -25,6 +25,12 @@ namespace Rift
             _camera = GetComponent<Camera>();
         }
 
+        private void OnEnable()
+        {
+            transform.position = Frame();
+            transform.localRotation = Quaternion.Euler(_pitch, _yaw, 0);
+        }
+
         private void FixedUpdate()
         {
             if (null == _target)

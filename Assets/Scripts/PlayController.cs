@@ -10,7 +10,8 @@ namespace Rift
         [SerializeField] private InputActionReference _lookAction = null;
         [SerializeField] private InputActionReference _mouseLookAction = null;
         [SerializeField] private InputActionReference _primaryAttackAction = null;
-        [SerializeField] private AudioSource _primaryAttackSound = null;
+        [SerializeField] private GameObject _primaryAttackFX = null;
+        [SerializeField] private Transform _primaryAttackFXTag = null;
         [SerializeField] private float _speed = 10.0f;
 
         [SerializeField] private GameObject _primaryAttackProjectile = null;
@@ -29,8 +30,8 @@ namespace Rift
             projectile.transform.rotation = transform.rotation;
             projectile.source = actor;
 
-            _primaryAttackSound.pitch = Random.Range(0.8f, 1.2f);
-            _primaryAttackSound.Play();
+            if(_primaryAttackFX != null)
+                Instantiate(_primaryAttackFX, _primaryAttackFXTag == null ? transform : _primaryAttackFXTag, false);
         }
 
         protected override void OnEnable()

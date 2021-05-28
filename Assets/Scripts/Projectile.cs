@@ -34,7 +34,7 @@ namespace Rift
                 return;
 
             var direction = delta.normalized;
-            if (Physics.SphereCast(transform.position, _radius, direction, out var hit, distance, _collisionMask))
+            if (Physics.SphereCast(transform.position - direction, _radius, direction, out var hit, distance + 1.0f, _collisionMask))
             {
                 var health = hit.collider.GetComponentInParent<Health>();
                 if (health != null)
@@ -46,7 +46,7 @@ namespace Rift
 
                 if(_impactFX != null)
                 {
-                    var impactFX = Instantiate(_impactFX, null);
+                    var impactFX = Instantiate(_impactFX, actor != null ? actor.transform : null);
                     impactFX.transform.position = hit.point;
                     impactFX.transform.rotation = Quaternion.LookRotation(hit.normal.ToXZ(), Vector3.up);
                 }                

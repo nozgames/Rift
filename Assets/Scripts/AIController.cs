@@ -19,6 +19,18 @@ namespace Rift
             _health = GetComponentInParent<Health>();
         }
 
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            GameManager.enemyCount++;
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnEnable();
+            GameManager.enemyCount--;
+        }
+
         private void FixedUpdate()
         {
             var player = GameManager.player;

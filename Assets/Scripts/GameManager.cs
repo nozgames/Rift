@@ -20,6 +20,8 @@ namespace Rift
 
         public static GameObject player { get; set; }
 
+        public static int enemyCount { get; set; }
+
         private void Awake()
         {
             _instance = this;
