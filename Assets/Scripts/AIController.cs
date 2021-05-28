@@ -9,6 +9,7 @@ namespace Rift
         [SerializeField] private float _deathExplosionMultiplier = 10.0f;
         [SerializeField] private GameObject _deathPrefab = null;
         [SerializeField] private GameObject _visuals = null;
+        [SerializeField] private float _explodeDistance = 1.5f;
 
         private Health _health;
 
@@ -43,6 +44,12 @@ namespace Rift
 
             transform.position += direction * _speed * Time.deltaTime;
             transform.LookAt(player.transform, Vector3.up);
+
+            if(distance < _explodeDistance)
+            {
+                _health.Adjust(-_health.value);
+                OnImpactEvent(new ImpactEvent(actor, transform.position, direction, 30.0f));
+            }
         }
 
         [ActorEventHandler]
